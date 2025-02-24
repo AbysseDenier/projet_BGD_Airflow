@@ -1,0 +1,15 @@
+# Airflow
+logs/
+__pycache__/
+airflow.cfg
+airflow.db
+*.pyc
+
+# Environnements virtuels
+venv/
+env/
+airflow-venv/
+
+# macOS
+.DS_Store
+

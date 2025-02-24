@@ -1,0 +1,28 @@
+MacBook-Air-de-Etienne:get_data_for_project etienneeskinazi$ source /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/Data_Lake/airflow-venv/bin/activate
+(airflow-venv) MacBook-Air-de-Etienne:airflow etienneeskinazi$ which python
+/Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/Data_Lake/airflow-venv/bin/python
+(airflow-venv) MacBook-Air-de-Etienne:get_data_for_project etienneeskinazi$ airflow scheduler
+
+
+New terminal :
+airflow webserver
+
+Airflow Path:
+/Users/etienneeskinazi/airflow
+airflow.cfg --> load_examples = False
+airflow webserver --reload
+airflow scheduler
+
+Ajouter les DAGS dans dags du dossier airflow
+
+airflow dags list
+ps aux | grep airflow
+lsof -i :8793
+kill -9 78967 88633 88675
+rm /Users/etienneeskinazi/airflow/airflow-webserver.pid
+
+
+# Changer chemin des dags
+/Users/etienneeskinazi/airflow/airflow.cfg
+[core]
+dags_folder = /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_RAMZI_Naji_projet_BGD_airflow/dags
