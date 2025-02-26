@@ -29,7 +29,7 @@ sp500_realtime_script = os.path.join(scripts_path, "launch_get_sp500_realtime.sh
 
 # 📌 Définition du DAG
 with DAG(
-    dag_id="dag5_all_tasks",
+    dag_id="dag1_extraction",
     default_args=default_args,
     schedule_interval=None,             #schedule_interval
     catchup=False,

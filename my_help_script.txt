@@ -26,3 +26,9 @@ rm /Users/etienneeskinazi/airflow/airflow-webserver.pid
 /Users/etienneeskinazi/airflow/airflow.cfg
 [core]
 dags_folder = /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_RAMZI_Naji_projet_BGD_airflow/dags
+
+# GIT
+git status
+git add -A  # Stages all changes in the entire repository
+git commit -m "Ajout de nouveaux DAGs, suppression des anciens, mise à jour des scripts d'extraction"
+git push origin main
