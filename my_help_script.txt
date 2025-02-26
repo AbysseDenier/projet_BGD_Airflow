@@ -32,3 +32,34 @@ git status
 git add -A  # Stages all changes in the entire repository
 git commit -m "Ajout de nouveaux DAGs, suppression des anciens, mise à jour des scripts d'extraction"
 git push origin main
+
+# DBT
+pip uninstall protobuf -y
+pip install "protobuf>=5.0,<6.0"
+pip install --upgrade --force-reinstall dbt-postgres
+
+Enter a number: 1
+host (hostname for the instance): localhost
+port [5432]: 
+user (dev username): etienneeskinazi
+pass (dev password): etienne
+dbname (default database that dbt will build objects in): bgd_project
+schema (default schema that dbt will build objects in): bigdata_dbt
+threads (1 or more) [1]: 
+14:59:08  Profile dbt_postgres_project written to /Users/etienneeskinazi/.dbt/profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+
+# PSQL
+nano ~/.bashrc
+export PATH="/Library/PostgreSQL/17/bin:$PATH"  # a la fin du fichier
+
+# redémarrer postgres
+sudo -u postgres pg_ctl -D /Library/PostgreSQL/17/data restart
+
+# connexion à PostgreSQL
+psql -U postgres -d postgres
+
+postgres=# CREATE USER etienneeskinazi WITH PASSWORD 'etienne';
+
+# dbt debug --> all checks passed
+cd /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_NAJI_Ramzi_projet_BGD_airflow/dbt_project/dbt_postgres_project
+dbt debug
