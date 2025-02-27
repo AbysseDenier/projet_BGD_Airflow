@@ -18,6 +18,7 @@ extract_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "extract_d
 concat_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "concatenate_data_scripts"))
 dbt_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "dbt_transform_data_scripts"))
 clean_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "clean_data_scripts"))
+index_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "elastic_index_data"))
 project_root = os.path.abspath(os.path.join(dag_folder, ".."))
 
 # 📌 Chemins des scripts d'extraction
@@ -36,9 +37,12 @@ update_dbt_script = os.path.join(dbt_scripts_path, "update_dbt_joined_file.sh")
 # 📌 Chemin du script de cleaning
 clean_data_script = os.path.join(clean_scripts_path, "launch_generate_cleaned_data.sh")
 
+# 📌 Chemin du script d'indexation Elasticsearch
+index_data_script = os.path.join(index_scripts_path, "launch_index_data.sh")
+
 # 📌 Définition du DAG
 with DAG(
-    dag_id="dag_extract_concat_transform_clean_pipeline",
+    dag_id="dag_full_pipeline",
     default_args=default_args,
     schedule_interval=None,  # Exécution manuelle ou planifiée via l’UI Airflow
     catchup=False,
@@ -90,6 +94,12 @@ with DAG(
         bash_command=f"bash {clean_data_script} {project_root}",
     )
 
+    # 📌 TASK INDEXATION Elasticsearch
+    task9_index_data = BashOperator(
+        task_id="index_data_in_elasticsearch",
+        bash_command=f"bash {index_data_script} {project_root}",
+    )
+
     # 🔗 Définition du workflow :
     # Chaîne BTC : historique -> realtime -> concaténation
     task1_btc_histo >> task2_btc_realtime >> task5_concat_btc
@@ -102,3 +112,6 @@ with DAG(
 
     # Exécution du cleaning après transformation réussie
     task7_run_dbt >> task8_clean_data
+
+    # Exécution de l'indexation Elasticsearch après le nettoyage des données
+    task8_clean_data >> task9_index_data

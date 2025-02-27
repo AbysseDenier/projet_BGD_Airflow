@@ -82,3 +82,9 @@ source ~/.zshrc  # Recharge la config
 bgd_project=# SELECT * FROM bigdata_dbt_bigdata_dbt.btc_concatenated LIMIT 10;
 
 open /tmp/
+
+# ELASTIC
+BGD_project_elastic_deployment
+Une fois ton cluster Elasticsearch créé :
+Va sur "Deployments".
+Trouve ton déploiement et clique sur "Copy endpoint".
