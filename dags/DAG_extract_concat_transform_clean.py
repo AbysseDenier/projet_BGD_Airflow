@@ -17,6 +17,7 @@ dag_folder = os.path.dirname(os.path.realpath(__file__))
 extract_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "extract_data_scripts"))
 concat_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "concatenate_data_scripts"))
 dbt_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "dbt_transform_data_scripts"))
+clean_scripts_path = os.path.abspath(os.path.join(dag_folder, "..", "clean_data_scripts"))
 project_root = os.path.abspath(os.path.join(dag_folder, ".."))
 
 # 📌 Chemins des scripts d'extraction
@@ -32,9 +33,12 @@ sp500_transform_script = os.path.join(concat_scripts_path, "launch_concatenate_s
 # 📌 Chemin du script Bash DBT
 update_dbt_script = os.path.join(dbt_scripts_path, "update_dbt_joined_file.sh")
 
+# 📌 Chemin du script de cleaning
+clean_data_script = os.path.join(clean_scripts_path, "launch_generate_cleaned_data.sh")
+
 # 📌 Définition du DAG
 with DAG(
-    dag_id="dag_extract_concat_transform_pipeline",
+    dag_id="dag_extract_concat_transform_clean_pipeline",
     default_args=default_args,
     schedule_interval=None,  # Exécution manuelle ou planifiée via l’UI Airflow
     catchup=False,
@@ -80,6 +84,12 @@ with DAG(
         bash_command=f"bash {update_dbt_script} {project_root}",
     )
 
+    # 📌 TASK CLEANING
+    task8_clean_data = BashOperator(
+        task_id="clean_sp500_btc_data",
+        bash_command=f"bash {clean_data_script} {project_root}",
+    )
+
     # 🔗 Définition du workflow :
     # Chaîne BTC : historique -> realtime -> concaténation
     task1_btc_histo >> task2_btc_realtime >> task5_concat_btc
@@ -89,3 +99,6 @@ with DAG(
 
     # Exécution de DBT après concaténation réussie
     [task5_concat_btc, task6_concat_sp500] >> task7_run_dbt
+
+    # Exécution du cleaning après transformation réussie
+    task7_run_dbt >> task8_clean_data
