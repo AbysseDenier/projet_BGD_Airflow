@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+ - name: my_sources
+   database: bgd_project
+   schema: public
+   tables:
+     - name: btc_concatenated
+     - name: sp500_concatenated

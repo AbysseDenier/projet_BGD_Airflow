@@ -28,6 +28,7 @@ rm /Users/etienneeskinazi/airflow/airflow-webserver.pid
 dags_folder = /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_RAMZI_Naji_projet_BGD_airflow/dags
 
 # GIT
+pip freeze > requirements.txt
 git status
 git add -A  # Stages all changes in the entire repository
 git commit -m "Ajout de nouveaux DAGs, suppression des anciens, mise à jour des scripts d'extraction"
@@ -57,9 +58,27 @@ sudo -u postgres pg_ctl -D /Library/PostgreSQL/17/data restart
 
 # connexion à PostgreSQL
 psql -U postgres -d postgres
+psql -U etienneeskinazi -d bgd_project
 
 postgres=# CREATE USER etienneeskinazi WITH PASSWORD 'etienne';
 
 # dbt debug --> all checks passed
 cd /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_NAJI_Ramzi_projet_BGD_airflow/dbt_project/dbt_postgres_project
 dbt debug
+
+# ajouter données à dbt
+nano dbt_postgres_project/dbt_project.yml
+seeds:
+  dbt_postgres_project:
+    +schema: bigdata_dbt
+    +quote_columns: false
+dbt seed
+psql -U etienneeskinazi -d bgd_project
+
+
+echo 'export PATH="/Library/PostgreSQL/17/bin:$PATH"' >> ~/.zshrc
+source ~/.zshrc  # Recharge la config
+
+bgd_project=# SELECT * FROM bigdata_dbt_bigdata_dbt.btc_concatenated LIMIT 10;
+
+open /tmp/
