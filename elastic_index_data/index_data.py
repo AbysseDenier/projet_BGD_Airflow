@@ -11,7 +11,7 @@ with open(os.path.join(project_root, "results_path.txt"), "r") as f:
     data_root = f.read().strip()
 
 # 📌 Définir le chemin du fichier CSV
-input_file = os.path.join(data_root, "usage_data", "cleaned_sp500_btc_usage_data.csv")
+input_file = os.path.join(data_root, "usage_data", "cleaned_sp500_btc_usage_data_with_features.csv")
 
 # 📌 Vérifier si le fichier CSV existe
 if not os.path.exists(input_file):
@@ -38,6 +38,9 @@ if df.empty:
     print("Le fichier CSV est vide. Aucune donnée à indexer.")
     exit(1)
 
+# 📌 Remplacement des NaN avant l'indexation
+df = df.fillna(0)
+
 # 📌 Définir le nom de l'index
 index_name = "sp500_btc_data"
 
@@ -56,7 +59,14 @@ for i, row in df.iterrows():
         "sp500_price": row["sp500_price"],
         "btc_price": row["btc_price"],
         "btc_market_cap": row["btc_market_cap"],
-        "btc_volume": row["btc_volume"]
+        "btc_volume": row["btc_volume"],
+        "rolling_corr_btc_sp500": row["rolling_corr_btc_sp500"],
+        "btc_return": row["btc_return"],
+        "sp500_return": row["sp500_return"],
+        "btc_acceleration_abs": row["btc_acceleration_abs"],
+        "sp500_acceleration_abs": row["sp500_acceleration_abs"],
+        "btc_acceleration_rel": row["btc_acceleration_rel"],
+        "sp500_acceleration_rel": row["sp500_acceleration_rel"]
     }
     es.index(index=index_name, id=i, document=doc)
 

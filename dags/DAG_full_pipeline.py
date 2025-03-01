@@ -34,8 +34,9 @@ sp500_transform_script = os.path.join(concat_scripts_path, "launch_concatenate_s
 # 📌 Chemin du script Bash DBT
 update_dbt_script = os.path.join(dbt_scripts_path, "update_dbt_joined_file.sh")
 
-# 📌 Chemin du script de cleaning
+# 📌 Chemin du script de cleaning et de creation de features
 clean_data_script = os.path.join(clean_scripts_path, "launch_generate_cleaned_data.sh")
+create_features_script = os.path.join(clean_scripts_path, "launch_create_features.sh")
 
 # 📌 Chemin du script d'indexation Elasticsearch
 index_data_script = os.path.join(index_scripts_path, "launch_index_data.sh")
@@ -94,8 +95,14 @@ with DAG(
         bash_command=f"bash {clean_data_script} {project_root}",
     )
 
+    # 📌 TASK CLEANING
+    task9_create_features = BashOperator(
+        task_id="create_features",
+        bash_command=f"bash {create_features_script} {project_root}",
+    )
+
     # 📌 TASK INDEXATION Elasticsearch
-    task9_index_data = BashOperator(
+    task10_index_data = BashOperator(
         task_id="index_data_in_elasticsearch",
         bash_command=f"bash {index_data_script} {project_root}",
     )
@@ -113,5 +120,8 @@ with DAG(
     # Exécution du cleaning après transformation réussie
     task7_run_dbt >> task8_clean_data
 
+    # Creation de features
+    task8_clean_data >> task9_create_features
+
     # Exécution de l'indexation Elasticsearch après le nettoyage des données
-    task8_clean_data >> task9_index_data
+    task9_create_features >> task10_index_data
