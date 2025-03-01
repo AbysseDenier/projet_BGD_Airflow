@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from elasticsearch import Elasticsearch
 
 # 📌 Récupérer le chemin du script et la racine du projet
 script_dir = os.path.dirname(os.path.realpath(__file__))  # Dossier contenant ce script
@@ -40,6 +39,12 @@ df['rolling_corr_btc_sp500'] = df['btc_price'].rolling(window=window_size, min_p
 # 📌 Calculer les rendements quotidiens
 df['btc_return'] = df['btc_price'].pct_change()
 df['sp500_return'] = df['sp500_price'].pct_change()
+
+# 📌 Calculer les indices base 100
+df['btc_base_100'] = 100 * (1 + df['btc_return']).cumprod()
+df['sp500_base_100'] = 100 * (1 + df['sp500_return']).cumprod()
+df['btc_base_100'].iloc[0] = 100
+df['sp500_base_100'].iloc[0] = 100
 
 # 📌 Calculer l'accélération des prix (2ème dérivée)
 df['btc_acceleration_abs'] = df['btc_return'].diff()

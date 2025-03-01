@@ -63,6 +63,8 @@ for i, row in df.iterrows():
         "rolling_corr_btc_sp500": row["rolling_corr_btc_sp500"],
         "btc_return": row["btc_return"],
         "sp500_return": row["sp500_return"],
+        "sp500_base_100": row["sp500_base_100"],
+        "btc_base_100": row["btc_base_100"],
         "btc_acceleration_abs": row["btc_acceleration_abs"],
         "sp500_acceleration_abs": row["sp500_acceleration_abs"],
         "btc_acceleration_rel": row["btc_acceleration_rel"],
