@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Ce script reçoit en argument le chemin absolu du projet, fourni par Airflow.
+# Get path as argument
 # .../ESKINAZI_Etienne_NAJI_Ramzi_projet_BGD_airflow
 
 PROJECT_ROOT="$1"

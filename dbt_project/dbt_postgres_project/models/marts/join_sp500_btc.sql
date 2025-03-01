@@ -14,7 +14,7 @@ final AS (
         btc.btc_market_cap,
         btc.btc_volume
     FROM sp500
-    LEFT JOIN btc ON sp500.date = btc.date  -- Prend les dates de SP500 comme référence
+    LEFT JOIN btc ON sp500.date = btc.date  -- SP500 dates as reference
 )
 
 SELECT * FROM final

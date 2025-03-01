@@ -31,7 +31,6 @@ airflow scheduler
 airflow webserver (dans un autre terminal)
 Accéder à Airflow via http://localhost:8080 (si 8080 est défini comme Port du server)
 
-### 7. Exécution des dags
-dag1_btc_histo pour récupérer les données crypto (Bitcoin).
-dag2_sp500_histo pour récupérer les données de l'indice S&P 500.
+### 7. Exécution du dag
+DAG_full_pipeline pour lancer la pipeline unique ETL
 

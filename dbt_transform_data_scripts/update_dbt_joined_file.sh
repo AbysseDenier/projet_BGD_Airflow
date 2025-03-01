@@ -2,15 +2,13 @@
 
 export PATH="/Library/PostgreSQL/17/bin:$PATH"
 
-echo "🚀 Début du processus de mise à jour des données"
+echo "Beginning of the process"
 
-# Récupérer le chemin du projet en argument
+# retrieve path as argument
 PROJECT_ROOT="$1"
-
-# Récupérer le chemin du dossier des résultats
 DATA_ROOT=$(cat "$PROJECT_ROOT/results_path.txt")
 
-# Définition des chemins des fichiers CSV
+# CSV path
 SRC_BTC="$DATA_ROOT/formatted_data/concatenated_files/btc_concatenated.csv"
 SRC_SP500="$DATA_ROOT/formatted_data/concatenated_files/sp500_concatenated.csv"
 
@@ -24,14 +22,14 @@ EXPORT_FILE="$EXPORT_DIR/joined_sp500_btc.csv"
 DB_NAME="bgd_project"
 DB_USER="etienneeskinazi"
 
-# Étape 1: Copier les fichiers CSV vers /private/tmp/
+# Copy csv file to /private/tmp/
 echo "📂 Copie des fichiers CSV..."
 cp -f "$SRC_BTC" "$DEST_BTC"
 cp -f "$SRC_SP500" "$DEST_SP500"
-echo "✅ Fichiers copiés dans $DEST_DIR"
+echo "Files copied in $DEST_DIR"
 
-# Étape 2: Charger les fichiers CSV dans PostgreSQL
-echo "📥 Chargement des données dans PostgreSQL..."
+# Load csv files in PostgreSQL
+echo "Load data in PostgreSQL..."
 psql -U $DB_USER -d $DB_NAME <<EOF
 TRUNCATE public.btc_concatenated;
 COPY public.btc_concatenated(date, price, market_cap, volume) FROM '$DEST_BTC' DELIMITER ',' CSV HEADER;
@@ -40,41 +38,41 @@ TRUNCATE public.sp500_concatenated;
 COPY public.sp500_concatenated(date, price) FROM '$DEST_SP500' DELIMITER ',' CSV HEADER;
 EOF
 if [ $? -eq 0 ]; then
-    echo "✅ Données chargées dans PostgreSQL"
+    echo "Data loaded in PostgreSQL"
 else
-    echo "❌ Erreur lors du chargement des données dans PostgreSQL"
+    echo "Error with loadind data in PostgreSQL"
     exit 1
 fi
 
-# Étape 3: Exécuter DBT pour mettre à jour les marts
-echo "🚀 Exécution de DBT..."
+# Launch DBT and the marts
+echo "Launch DBT.."
 cd /Users/etienneeskinazi/Documents/MS_BGD/P2/BigData/ESKINAZI_Etienne_NAJI_Ramzi_projet_BGD_airflow/dbt_project/dbt_postgres_project
 dbt run --full-refresh
 if [ $? -eq 0 ]; then
-    echo "✅ DBT exécuté avec succès"
+    echo "DBT launched !"
 else
-    echo "❌ Erreur lors de l'exécution de DBT"
+    echo "Error with DBT launching"
     exit 1
 fi
 
-# Étape 4: Vérifier la mise à jour de la table `join_sp500_btc`
-echo "🔍 Vérification de la table join_sp500_btc..."
+# Check if `join_sp500_btc` created
+echo "Check if join_sp500_btc created..."
 psql -U $DB_USER -d $DB_NAME -c "SELECT COUNT(*) FROM public.join_sp500_btc;"
 if [ $? -eq 0 ]; then
-    echo "✅ Table join_sp500_btc mise à jour"
+    echo " join_sp500_btc updated"
 else
-    echo "❌ Erreur : la table join_sp500_btc n'a pas été mise à jour"
+    echo "Error with updating join_sp500_btc table"
     exit 1
 fi
 
-# Étape 5: Exporter la table `join_sp500_btc` vers un fichier CSV
-echo "📤 Exportation de la table join_sp500_btc..."
+# Export`join_sp500_btc` to csv
+echo "Export join_sp500_btc..."
 psql -U $DB_USER -d $DB_NAME -c "\COPY public.join_sp500_btc TO '$EXPORT_FILE' WITH CSV HEADER;"
 if [ $? -eq 0 ]; then
-    echo "✅ Exportation terminée : $EXPORT_FILE"
+    echo "Exportation finished : $EXPORT_FILE"
 else
-    echo "❌ Erreur lors de l'exportation"
+    echo "Error with exportation"
     exit 1
 fi
 
-echo "🎯 Processus terminé avec succès !"
+echo "End of DBT process !"
