@@ -5,8 +5,9 @@ Ce dépôt contient le projet de récupération de données financières et de l
 
 ## Installation et démarrage du projet
 
-### 1. Cloner le dépôt
+
 ```bash
+### 1. Cloner le dépôt
 git clone [url_de_ton_depot_git]
 cd ESKINAZI_Etienne_NAJI_Ramzi_projet_BGD_airflow
 
